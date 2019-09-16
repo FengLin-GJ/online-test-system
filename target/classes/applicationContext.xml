@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+	http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
+	http://www.springframework.org/schema/context
+	http://www.springframework.org/schema/context/spring-context-4.0.xsd
+	http://www.springframework.org/schema/aop
+	http://www.springframework.org/schema/aop/spring-aop-4.0.xsd
+	http://www.springframework.org/schema/tx
+	http://www.springframework.org/schema/tx/spring-tx-4.0.xsd">
+
+	<!-- 引入外部的属性文件 -->
+	<context:property-placeholder
+		location="classpath:jdbc.properties" />
+
+	<!-- 配置连接池 -->
+	<bean id="dataSource"
+		class="com.mchange.v2.c3p0.ComboPooledDataSource">
+		<property name="driverClass"
+			value="${hibernate.connection.driver_class}" />
+		<property name="jdbcUrl" value="${hibernate.connection.url}" />
+		<property name="user"
+			value="${hibernate.connection.username}" />
+		<property name="password"
+			value="${hibernate.connection.password}" />
+		<property name="idleConnectionTestPeriod"
+			value="30" />
+		<property name="breakAfterAcquireFailure"
+			value="false" />	
+	</bean>
+
+	<!-- 配置hibernate的相关属性 -->
+	<bean id="sessionFactory"
+		class="org.springframework.orm.hibernate4.LocalSessionFactoryBean">
+		<!-- 注入连接池 -->
+		<property name="dataSource" ref="dataSource" />
+		<!-- 配置hibernate的属性 -->
+		<property name="hibernateProperties">
+			<props>
+				<prop key="hibernate.dialect">${hibernate.dialect}</prop>
+				<prop key="hibernate.show_sql">${hibernate.show_sql}</prop>
+				<prop key="hibernate.format_sql">${hibernate.format_sql}</prop>
+				<prop key="hibernate.hbm2ddl.auto">${hibernate.hbm2ddl.auto}</prop>
+			</props>
+		</property>
+		<!-- 扫描实体类包，解析实体类的注解 -->
+		<property name="packagesToScan">
+			<list>
+				<!-- 这里value值添实体类所在的包 -->
+				<value>com.ots.entity</value>
+			</list>
+		</property>
+	</bean>
+	 
+	<!-- 配置Action的类 -->
+	<bean id="authMationsAction" class="com.ots.action.Impl.AuthMationsActionImpl"
+		scope="prototype">
+		<!-- 手动注入Service -->
+		<property name="authMationsService" ref="authMationsService" />
+	</bean>
+	<bean id="examAction" class="com.ots.action.Impl.ExamActionImpl"
+		scope="prototype">
+		<!-- 手动注入Service -->
+		<property name="examService" ref="examService" />
+	</bean>
+	<bean id="infoMationsAction" class="com.ots.action.Impl.InfoMationsActionImpl"
+		scope="prototype">
+		<!-- 手动注入Service -->
+		<property name="infoMationsService" ref="infoMationsService" />
+	</bean>
+	<bean id="onlineExamAction" class="com.ots.action.Impl.OnlineExamActionImpl"
+		scope="prototype">
+		<!-- 手动注入Service -->
+		<property name="onlineExamService" ref="onlineExamService" />
+	</bean>
+	<bean id="queBaMationsAction" class="com.ots.action.Impl.QueBaMationsActionImpl"
+		scope="prototype">
+		<!-- 手动注入Service -->
+		<property name="queBaMationsService" ref="queBaMationsService" />
+	</bean>
+	
+
+	<!-- 配置业务层的类 -->
+	<bean id="authMationsService" class="com.ots.service.Impl.AuthMationsServiceImpl">
+		<property name="authMationsDao" ref="authMationsDao" />
+	</bean>
+	<bean id="examService" class="com.ots.service.Impl.ExamServiceImpl">
+		<property name="examDao" ref="examDao" />
+	</bean>
+	<bean id="infoMationsService" class="com.ots.service.Impl.InfoMationsServiceImpl">
+		<property name="infoMationsDao" ref="infoMationsDao" />
+	</bean>
+	<bean id="onlineExamService" class="com.ots.service.Impl.OnlineExamServiceImpl">
+		<property name="onlineExamDao" ref="onlineExamDao" />
+	</bean>
+	<bean id="queBaMationsService" class="com.ots.service.Impl.QueBaMationsServiceImpl">
+		<property name="queBaMationsDao" ref="queBaMationsDao" />
+	</bean>
+
+	<!-- 配置DAO层的类 -->
+	<bean id="authMationsDao" class="com.ots.dao.Impl.AuthMationsDaoImpl">
+		<property name="sessionFactory" ref="sessionFactory"/>
+	</bean>
+	<bean id="examDao" class="com.ots.dao.Impl.ExamDaoImpl">
+		<property name="sessionFactory" ref="sessionFactory"/>
+	</bean>
+	<bean id="infoMationsDao" class="com.ots.dao.Impl.InfoMationsDaoImpl">
+		<property name="sessionFactory" ref="sessionFactory"/>
+	</bean>
+	<bean id="onlineExamDao" class="com.ots.dao.Impl.OnlineExamDaoImpl">
+		<property name="sessionFactory" ref="sessionFactory"/>
+	</bean>
+	<bean id="queBaMationsDao" class="com.ots.dao.Impl.QueBaMationsDaoImpl">
+		<property name="sessionFactory" ref="sessionFactory"/>
+	</bean>
+	
+	<!-- 配置事务管理器 -->
+	<bean id="transactionManager"
+		class="org.springframework.orm.hibernate4.HibernateTransactionManager">
+		<property name="sessionFactory" ref="sessionFactory" />
+	</bean>
+
+	<!-- 开启注解事务 -->
+	<tx:annotation-driven transaction-manager="transactionManager" />
+</beans> 

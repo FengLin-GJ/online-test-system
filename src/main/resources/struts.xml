@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE struts PUBLIC
+	"-//Apache Software Foundation//DTD Struts Configuration 2.3//EN"
+	"http://struts.apache.org/dtds/struts-2.3.dtd">
+
+<struts>
+	<package name="online-test-system" namespace="/" extends="struts-default">
+		<action name="authMations_*" class="authMationsAction" method="{1}">
+			<result name=""></result>
+		</action>
+		<action name="exam_*" class="examAction" method="{1}">
+			<result name=""></result>
+		</action>
+		<action name="infoMations_*" class="infoMationsAction" method="{1}">
+			<result name=""></result>
+		</action>
+		<action name="onlineExam_*" class="onlineExamAction" method="{1}">
+			<result name=""></result>
+		</action>
+		<action name="queBaMations_*" class="queBaMationsAction" method="{1}">
+			<result name=""></result>
+		</action>
+	</package>
+
+	<package name="online-test-system" namespace="/" extends="json-default">
+		<action name="*_*" class="authMationsAction" method="{2}">
+			<result name="ajax" type="json">
+				<param name="root">data</param>
+			</result>
+		</action>
+		<action name="*_*" class="examAction" method="{2}">
+			<result name="ajax" type="json">
+				<param name="root">data</param>
+			</result>
+		</action>
+		<action name="*_*" class="infoMationsAction" method="{2}">
+			<result name="ajax" type="json">
+				<param name="root">data</param>
+			</result>
+		</action>
+		<action name="*_*" class="onlineExamAction" method="{2}">
+			<result name="ajax" type="json">
+				<param name="root">data</param>
+			</result>
+		</action>
+		<action name="*_*" class="queBaMationsAction" method="{2}">
+			<result name="ajax" type="json">
+				<param name="root">data</param>
+			</result>
+		</action>
+	</package>
+</struts>
